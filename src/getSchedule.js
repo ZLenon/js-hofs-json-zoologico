@@ -4,43 +4,41 @@ const { hours, species } = data;
 
 const days = Object.keys(hours);
 
-const alldays = () => {
-  return days.reduce((acc, curr) => {
-    acc[curr] = { officeHour: `Open from ${hours[curr].open}am until ${hours[curr].close}pm` };
-    acc[curr].exhibition = species.filter((param) => param.availability.includes(curr))
-      .map((nome) => nome.name);
-    if (curr === 'Monday') {
-      acc[curr].officeHour = 'CLOSED';
-      acc[curr].exhibition = 'The zoo will be closed!';
-    }
-    return acc;
-  }, {});
-};
+const allDays = () => days.reduce((acc, curr) => {
+  acc[curr] = { officeHour: `Open from ${hours[curr].open}am until ${hours[curr].close}pm` };
+  acc[curr].exhibition = species.filter((param) => param.availability.includes(curr))
+    .map((nome) => nome.name);
+  if (curr === 'Monday') {
+    acc[curr].officeHour = 'CLOSED';
+    acc[curr].exhibition = 'The zoo will be closed!';
+  }
+  return acc;
+}, {});
 
-const oneday = (scheduleTarget) => {
-  const days = {
-    officeHour: `Open from ${hours[scheduleTarget].open}am until ${hours[scheduleTarget].close}pm`
+const oneDay = (scheduleTarget) => {
+  const diasSemana = {
+    officeHour: `Open from ${hours[scheduleTarget].open}am until ${hours[scheduleTarget].close}pm`,
   };
-  days.exhibition = species.filter((param) => param.availability
+  diasSemana.exhibition = species.filter((param) => param.availability
     .includes(scheduleTarget)).map((param) => param.name);
   if (scheduleTarget === 'Monday') {
-    days.officeHour = 'CLOSED';
-    days.exhibition = 'The zoo will be closed!';
+    diasSemana.officeHour = 'CLOSED';
+    diasSemana.exhibition = 'The zoo will be closed!';
   }
-  return { [scheduleTarget]: days };
+  return { [scheduleTarget]: diasSemana };
 };
 
 function getSchedule(scheduleTarget) {
   if (!scheduleTarget) {
-    return alldays();
+    return allDays();
   }
   if (days.includes(scheduleTarget)) {
-    return oneday(scheduleTarget);
+    return oneDay(scheduleTarget);
   }
   if (species.some((nome) => nome.name === scheduleTarget)) {
     return species.find((name) => name.name.includes(scheduleTarget)).availability;
   }
-  return alldays();
+  return allDays();
 }
 // console.log(getSchedule('lions'));
 module.exports = getSchedule;
